@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000',
     headers: { 'Content-Type': 'application/json' },
     timeout: 10000, 
 });
@@ -15,7 +15,7 @@ export const updateTask = (id, task) => api.put(`/tasks/${id}/`, task).then((res
 //PATCH
 export const toggleTask = (id) => api.patch(`/tasks/${id}/`).then((res) => res.data);
 
-export const deleteTask = (id) => api.delete(`/tasks/${id}`);
+export const deleteTask = (id) => api.delete(`/tasks/${id}/`);
 
 // Turns an Axios error into a readable message for the UI.
 export function getErrorMessage(error) {
