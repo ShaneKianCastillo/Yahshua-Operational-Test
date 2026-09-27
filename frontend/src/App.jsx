@@ -1,16 +1,32 @@
-import { createTask } from './api/tasks'
+import { createTask, deleteTask, getTasks, toggleTask, updateTask } from './api/tasks'
+import { useEffect, useState } from 'react'
 import TaskForm from './components/TaskForm'
+import TaskItem from './components/TaskItem'
 
 function App() {
-  const handleCreate = async (values) => {
-    const task = await createTask(values)
-    console.log('Created:', task)
-  }
+  const [tasks, setTasks] = useState([])
+
+  useEffect(() => {
+    getTasks().then(setTasks)
+  }, [])
+
+  const replaceTask = (updated) => setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)))
 
   return (
-    <div className="mx-auto max-w-xl p-8">
-      <TaskForm onSubmit={handleCreate} submitLabel="Add task" />
-    </div>
+    <ul className="mx-auto max-w-2xl space-y-3 p-8">
+      {tasks.map((task) => (
+        <TaskItem
+          key={task.id}
+          task={task}
+          onUpdate={async (id, values) => replaceTask(await updateTask(id, values))}
+          onToggle={async (id) => replaceTask(await toggleTask(id))}
+          onDelete={async (id) => {
+            await deleteTask(id)
+            setTasks((prev) => prev.filter((t) => t.id !== id))
+          }}
+        />
+      ))}
+    </ul>
   )
 }
 
